@@ -1,5 +1,5 @@
 import streamlit as st
-from openai import OpenAI
+from google import genai
 from dotenv import load_dotenv
 import os
 
@@ -12,16 +12,13 @@ st.set_page_config(
 
 st.title("🤖 My Free AI Chatbot")
 
-api_key = os.getenv("GROQ_API_KEY")
+api_key = os.getenv("GEMINI_API_KEY")
 
 if not api_key:
-    st.error("GROQ_API_KEY is not configured.")
+    st.error("GEMINI_API_KEY is not configured.")
     st.stop()
 
-client = OpenAI(
-    api_key=api_key,
-    base_url="https://api.groq.com/openai/v1"
-)
+client = genai.Client(api_key=api_key)
 
 if "messages" not in st.session_state:
     st.session_state.messages = []
@@ -42,12 +39,12 @@ if prompt:
         st.write(prompt)
 
     with st.chat_message("assistant"):
-        response = client.chat.completions.create(
-            model="llama-3.3-70b-versatile",
-            messages=st.session_state.messages
+        response = client.models.generate_content(
+            model="gemini-2.0-flash",
+            contents=prompt
         )
 
-        answer = response.choices[0].message.content
+        answer = response.text
         st.write(answer)
 
     st.session_state.messages.append({
