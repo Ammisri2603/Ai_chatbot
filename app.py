@@ -39,10 +39,16 @@ if prompt:
         st.write(prompt)
 
     with st.chat_message("assistant"):
-        response = client.models.generate_content(
-            model="gemini-2.0-flash",
-            contents=prompt
-        )
+       try:
+    response = client.models.generate_content(
+        model="gemini-2.0-flash",
+        contents=prompt
+    )
+    answer = response.text
+
+except Exception as e:
+    st.error(f"Gemini error: {e}")
+    st.stop()
 
         answer = response.text
         st.write(answer)
