@@ -6,19 +6,22 @@ import os
 load_dotenv()
 
 st.set_page_config(
-    page_title="My AI Chatbot",
+    page_title="My Free AI Chatbot",
     page_icon="🤖"
 )
 
-st.title("🤖 My AI Chatbot")
+st.title("🤖 My Free AI Chatbot")
 
-api_key = os.getenv("OPENAI_API_KEY")
+api_key = os.getenv("GROQ_API_KEY")
 
 if not api_key:
-    st.error("OPENAI_API_KEY is not configured.")
+    st.error("GROQ_API_KEY is not configured.")
     st.stop()
 
-client = OpenAI(api_key=api_key)
+client = OpenAI(
+    api_key=api_key,
+    base_url="https://api.groq.com/openai/v1"
+)
 
 if "messages" not in st.session_state:
     st.session_state.messages = []
@@ -40,7 +43,7 @@ if prompt:
 
     with st.chat_message("assistant"):
         response = client.chat.completions.create(
-            model="gpt-4o-mini",
+            model="llama-3.3-70b-versatile",
             messages=st.session_state.messages
         )
 
